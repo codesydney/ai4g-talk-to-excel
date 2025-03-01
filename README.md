@@ -5,7 +5,11 @@ We have used [Chainlit](https://docs.chainlit.io/get-started/overview) to provid
 
 **Note:** Due to the complexity of pandas queries, local LLMs like those provided by Ollama are not powerful enough to handle them effectively. For this repo, we have used Claude Sonnet 3.5 which is provided by AWS Bedrock.  
 
+## Welcome message
 ![Excel Data Explorer](./images/excel-data-explorer.png)
+
+## Excel file loaded
+![Loaded dataframe](./images/loaded-xls-dataframe.png)
 
 ## Ask questions asking for insights and visualisations
 
