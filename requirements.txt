@@ -1,0 +1,14 @@
+arize-phoenix
+chainlit
+instructor
+llama-index
+llama-index-embeddings-bedrock
+llama-index-embeddings-ollama
+llama-index-experimental
+llama-index-llms-bedrock
+llama-index-llms-ollama
+matplotlib
+numpy<2
+openpyxl
+pyvis
+seaborn
