@@ -15,12 +15,12 @@ logging.getLogger().addHandler(logging.StreamHandler(stream=sys.stdout))
 
 logging.getLogger("httpx").setLevel(logging.ERROR)
 
-app_settings = get_settings()
-
 def load_language_models(is_local=False):
     """
     Load the language models for the Retriever and Generator.
     """
+    app_settings = get_settings()
+    
     if is_local:
         from llama_index.llms.ollama import Ollama
 
