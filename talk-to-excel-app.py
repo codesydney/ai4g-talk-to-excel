@@ -28,20 +28,15 @@ def load_language_models(is_local=False):
     else:
         
         from llama_index.llms.bedrock import Bedrock
-        import os
-        # from dotenv import load_dotenv
-
-        # print(f"Loading env: {load_dotenv(verbose=True, dotenv_path=".env")}")
-        # print(f"App Settings: {app_settings}")
         
-        llm_model = "anthropic.claude-3-5-sonnet-20241022-v2:0"
+        llm_model = app_settings.bedrock.default_model
         print(f"Setting up remote Generator model (main LLM: {llm_model})...")
         Settings.llm = Bedrock(
             model=llm_model,
-            aws_access_key_id=app_settings.aws_access_key_id,
-            aws_secret_access_key=app_settings.aws_secret_access_key,
-            aws_session_token=app_settings.aws_session_token,
-            region_name=app_settings.aws_default_region,
+            aws_access_key_id=app_settings.bedrock.access_key_id,
+            aws_secret_access_key=app_settings.bedrock.secret_access_key,
+            aws_session_token=app_settings.bedrock.session_token,
+            region_name=app_settings.bedrock.default_region,
             context_window=8192,
             request_timeout=120,
         )
