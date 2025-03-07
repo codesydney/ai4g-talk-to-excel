@@ -7,7 +7,7 @@ import sys
 from llama_index.core import Settings
 from llama_index.core.prompts import PromptTemplate
 
-from config.app_settings import get_settings
+from services.llm_factory import LLMFactory
 
 logging.basicConfig(stream=sys.stdout, level=logging.ERROR)
 logging.getLogger().handlers = []
@@ -15,33 +15,14 @@ logging.getLogger().addHandler(logging.StreamHandler(stream=sys.stdout))
 
 logging.getLogger("httpx").setLevel(logging.ERROR)
 
-def load_language_models(is_local=False):
+def load_language_model(llm_client: str):
     """
-    Load the language models for the Retriever and Generator.
+    Load the language model using the LLMFactory and the specified client
+    - this makes it easy to swap between different language models.
     """
-    app_settings = get_settings()
-    
-    if is_local:
-        from llama_index.llms.ollama import Ollama
+    Settings.llm = LLMFactory(llm_client).client
 
-        Settings.llm = Ollama(model="codellama:13b", request_timeout=240.0,)
-    else:
-        
-        from llama_index.llms.bedrock import Bedrock
-        
-        llm_model = app_settings.bedrock.default_model
-        print(f"Setting up remote Generator model (main LLM: {llm_model})...")
-        Settings.llm = Bedrock(
-            model=llm_model,
-            aws_access_key_id=app_settings.bedrock.access_key_id,
-            aws_secret_access_key=app_settings.bedrock.secret_access_key,
-            aws_session_token=app_settings.bedrock.session_token,
-            region_name=app_settings.bedrock.default_region,
-            context_window=8192,
-            request_timeout=120,
-        )
-    
-load_language_models()
+load_language_model("bedrock")
 
 @cl.on_chat_start
 async def on_chat_start():
@@ -135,6 +116,7 @@ async def on_message(message: cl.Message):
     """
     import matplotlib.pyplot as plt
 
+    print(f"Received message: {message.content}")
     df = cl.user_session.get("df")
     query_engine = PandasQueryEngine(
         df=df,
@@ -151,6 +133,7 @@ async def on_message(message: cl.Message):
     await thinking_msg.send()
     
     try:
+        print(f"Before predict")
         # Use the language model to check if the message is asking for a plot or visualization
         prediction = Settings.llm.predict(
             prompt=PromptTemplate(f"Does the following message explicitly ask for a graph, plot or visualisation? \
