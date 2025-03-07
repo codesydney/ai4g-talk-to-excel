@@ -185,3 +185,4 @@ joblib/python/*
 pypdf2/python/*
 
 docker-compose-aws.yml
+new_plot.png

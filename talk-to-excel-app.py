@@ -7,18 +7,21 @@ import sys
 from llama_index.core import Settings
 from llama_index.core.prompts import PromptTemplate
 
+from config.app_settings import get_settings
+
 logging.basicConfig(stream=sys.stdout, level=logging.ERROR)
 logging.getLogger().handlers = []
 logging.getLogger().addHandler(logging.StreamHandler(stream=sys.stdout))
 
 logging.getLogger("httpx").setLevel(logging.ERROR)
 
+app_settings = get_settings()
+
 def load_language_models(is_local=False):
     """
     Load the language models for the Retriever and Generator.
     """
     if is_local:
-        from llama_index.core import Settings
         from llama_index.llms.ollama import Ollama
 
         Settings.llm = Ollama(model="codellama:13b", request_timeout=240.0,)
@@ -26,23 +29,24 @@ def load_language_models(is_local=False):
         
         from llama_index.llms.bedrock import Bedrock
         import os
-        from dotenv import load_dotenv
+        # from dotenv import load_dotenv
 
-        print(f"Loading env: {load_dotenv(verbose=True, dotenv_path=".env")}")
+        # print(f"Loading env: {load_dotenv(verbose=True, dotenv_path=".env")}")
+        # print(f"App Settings: {app_settings}")
         
         llm_model = "anthropic.claude-3-5-sonnet-20241022-v2:0"
         print(f"Setting up remote Generator model (main LLM: {llm_model})...")
         Settings.llm = Bedrock(
             model=llm_model,
-            aws_access_key_id=os.environ["AWS_ACCESS_KEY_ID"],
-            aws_secret_access_key=os.environ["AWS_SECRET_ACCESS_KEY"],
-            aws_session_token=os.environ["AWS_SESSION_TOKEN"],
-            region_name=os.environ["AWS_DEFAULT_REGION"],
+            aws_access_key_id=app_settings.aws_access_key_id,
+            aws_secret_access_key=app_settings.aws_secret_access_key,
+            aws_session_token=app_settings.aws_session_token,
+            region_name=app_settings.aws_default_region,
             context_window=8192,
             request_timeout=120,
         )
     
-load_language_models(is_local=True)
+load_language_models()
 
 @cl.on_chat_start
 async def on_chat_start():
