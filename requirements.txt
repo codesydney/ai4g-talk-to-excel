@@ -10,5 +10,7 @@ llama-index-llms-ollama
 matplotlib
 numpy<2
 openpyxl
+pydantic
+pydantic-settings
 pyvis
 seaborn
