@@ -49,6 +49,10 @@ pip install -r requirements.txt
 
 ## Running Locally
 
+Copy the file `example.env` to `.env` and update the values as needed.
+
+Then run the following command to start the app:
+
 ```bash
 chainlit run talk-to-excel-app.py -w
 ```
